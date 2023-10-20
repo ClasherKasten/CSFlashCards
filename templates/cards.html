@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<!--
+    <div class="well editPanel">
+        <h2>Add a Card</h2>
+        <form action="{{ url_for('add_card') }}" method="post" class="cardForm">
+            <div class="form-group">
+                {% for tag in tags %}
+                <label for={{tag.tagName}} class="toggleButton btn btn-default btn-lg">{{tag.tagName}} &nbsp;
+                    <input type="radio" name="type" value={{tag.id}} id={{tag.tagName}}>
+                </label>
+                {% endfor %}
+            </div>
+            <div class="form-group fieldFront">
+                <label for="front">Front of Card</label>
+                <input type="text" name="front" id="front" class="form-control">
+            </div>
+            <div class="form-group fieldBack">
+                <label for="back">Back of Card</label>
+                <textarea name="back"
+                          class="form-control"
+                          id="back"
+                          placeholder="back of card"
+                          rows="12"></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="saveButton btn btn-lg btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+-->
+    <div class="page-header">
+        {% include "set_dropdown.html" %}
+        <div class="d-flex justify-content-between flex-fill w-100 mt-2 m-md-3" id="cards-info-field">
+            {% if current_db != 'None' %}
+                <span>{{ cards|length }} Card{{ '' if (cards|length == 1) else 's' }}</span>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                  <i class="bi bi-plus"></i>
+                </button>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Cards list -->
+    <div class="container p-4 p-sm-auto cards-list">
+        {% for card in cards %}
+            <a href="{{ url_for('edit', card_id=card.id) }}" class="btn btn-outline-secondary card">
+                <h4 class="text-start">
+                    {{ card.front }}
+                </h4>
+                <div class="text-start">
+                    {% if card.type == 1 %}
+                        {{ card.back|replace("\n", "<br />")|safe }}
+                    {% else %}
+                        <pre><code>{{ card.back|escape }}</code></pre>
+                    {% endif %}
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Add new card</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form action="{{ url_for('add_card') }}" method="post" class="cardForm">
+            <div class="modal-body">
+                <div class="form-group">
+                    <select class="form-select" id="type" name="type">
+                        <option selected>Card type...</option>
+                        {% for tag in tags %}
+                            <option value="{{ tag.id }}">{{ tag.tagName }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group fieldFront mt-3">
+                    <label for="front">Front of Card (Question)</label>
+                    <input type="text" name="front" id="front" class="form-control">
+                </div>
+                <div class="form-group fieldBack mt-3">
+                    <label for="back">Back of Card (Answer)</label>
+                    <textarea name="back"
+                              class="form-control"
+                              id="back"
+                              rows="12"
+                              style="resize: none"></textarea>
+                </div>
+            </div>
+            <div class="form-group modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

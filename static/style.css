@@ -1,0 +1,176 @@
+.toggleSelected {
+    background-color: #62b06b;
+    color: #ffffff;
+}
+
+textarea {
+    font-family: monospace;
+}
+
+.cardContent .tagContent h4 {
+    margin-top: 0;
+}
+
+.alignContainer {
+    display: table;
+    width: 100%;
+}
+
+.alignMiddle {
+    height: 20em;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.cardBack {
+    display: none;
+}
+
+.largerText {
+    font-size: 2em;
+}
+
+
+/* disables collapsing header menu */
+
+.navbar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navbar-header-mod {
+  justify-content: space-between;
+}
+
+
+/* more beautiful login page */
+.login-heading {
+  text-align: center;
+}
+
+.well {
+  display: flex;
+  justify-content: center;
+}
+
+.well > form {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  align-items: center;
+  width: 75vw;
+}
+
+.login-button {
+  margin-top: 2.5vh;
+}
+
+/* list_db */
+.dbContent {
+  display: grid;
+  place-items: center;
+  height: 100%;
+}
+
+a.nav-link span {
+  margin-left: 1em;
+}
+
+.navbar-nav {
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+nav.navbar > div.container-fluid {
+  display: flex;
+  justify-content: space-between;
+}
+
+.db-list-wrapper {
+  display: grid;
+  place-items: center;
+}
+
+.db-list-wrapper > div {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0;
+}
+
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
+
+.page-header div > span {
+  font-size: 1.75rem;
+  font-weight: 500;
+}
+
+.card h4 {
+  color: black;
+}
+
+.card {
+  padding: 2rem;
+}
+
+.card:hover {
+  background-color: transparent;
+  color: black;
+}
+
+.cards-list {
+  display: grid;
+  gap: 2rem;
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .navbar-brand {
+    flex-grow: 0.5;
+  }
+
+  .page-header {
+    flex-direction: row;
+  }
+
+  #cards-info-field {
+    flex-grow: 0.1;
+    width: 5%!important;
+  }
+
+  .cards-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .navbar-brand {
+    flex-grow: 0.75;
+  }
+}
+
+/* X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .navbar-brand {
+    flex-grow: 0.82;
+  }
+
+  .cards-list {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) {
+  .navbar-brand {
+    flex-grow: 0.85;
+  }
+}

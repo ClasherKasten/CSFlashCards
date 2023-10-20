@@ -1,0 +1,26 @@
+{% if session.logged_in %}
+<div class="my-3 d-flex justify-content-center">
+    <div class="p-3 border d-flex align-items-center gap-2">
+        <div>Current Set:</div>
+        <div class="dropdown">
+            <button
+                class="btn dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            >
+                {{ current_db.replace('.db', '') }}
+            </button>
+            <ul class="dropdown-menu">
+                {% for db in dbs %}
+                    <li>
+                        <a href="{{ url_for('load_db', name=db) }}" class="dropdown-item">
+                            {{ db.replace('.db', '') }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
