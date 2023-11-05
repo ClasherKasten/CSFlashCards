@@ -4,6 +4,7 @@ import enum
 import os
 import sqlite3
 
+import flask
 from flask import flash
 from flask import Flask
 from flask import g
@@ -28,7 +29,7 @@ class CardTypes(enum.Enum):
 def load_config():
     app.config.update(
         dict(
-            SECRET_KEY='development key',          
+            SECRET_KEY='development key',
         ),
     )
 
@@ -68,7 +69,6 @@ def cards():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
-    
     query = '''
         SELECT *
         FROM cards where tag_id = ?
@@ -79,13 +79,12 @@ def cards():
     tag_id = int(request.args.get('tag_id'))
     db = sqlite3.connect(os.path.join(db_path, db_name))
     c = db.cursor()
-    c.execute(query)
+    c.execute(query, (tag_id,))
 
     return render_template(
         'cards.html',
         cards=cards,
     )
-
 
 
 @app.route('/cards/add', methods=['POST'])
@@ -97,7 +96,14 @@ def add_card():
     tag_id = flask.cookies.get('tag_id')
     db = sqlite3.connect(os.path.join(db_path, db_name))
     c = db.cursor()
-    c.execute('insert into cards (type, front, back, known, tag_id) values (?,?,?,?,?)', (request.form['type'], request.form['front'], request.form['back'], request.form['known'], tag_id) )
+    c.execute(
+        '''insert into cards (type, front, back, known, tag_id)
+            values (?,?,?,?,?)''',
+        (
+            request.form['type'], request.form['front'],
+            request.form['back'], request.form['known'], tag_id,
+        ),
+    )
     db.commit()
     flash('New card was successfully added.')
     return redirect(url_for('cards'))
@@ -119,14 +125,13 @@ def edit_card():
     db_path = flask.cookies.get('username')
     db_name = flask.cookies.get('username')
     db = sqlite3.connect(os.path.join(db_path, db_name))
-    c = db.cursor()
     db.execute(
         command,
         [
             request.form['type'],
             request.form['front'],
             request.form['back'],
-            known,
+            request.form['known'],
             request.form['card_id'],
         ],
     )
@@ -135,14 +140,13 @@ def edit_card():
     return redirect(url_for('cards'))
 
 
-@app.route('/cards/delete' , methods=['POST'])
+@app.route('/cards/delete', methods=['POST'])
 def delete(card_id):
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     db_path = flask.cookies.get('username')
     db_name = flask.cookies.get('username')
     db = sqlite3.connect(os.path.join(db_path, db_name))
-    c = db.cursor()
     db.execute('DELETE FROM cards WHERE id = ?', [card_id])
     db.commit()
     flash('Card deleted.')
@@ -151,16 +155,19 @@ def delete(card_id):
 
 @app.route('/learn')
 def memorize():
-    
+
     tag_id = flask.cookies.get('tag_id')
     db_path = flask.cookies.get('username')
     db_name = flask.cookies.get('username')
     db = sqlite3.connect(os.path.join(db_path, db_name))
-    c = db.cursor()
-    cards = db.execute('SELECT front,back,type FROM cards WHERE tag_id = ?', [tag_id]).fetchall()
+    cards = db.execute(
+        'SELECT front,back,type FROM cards WHERE tag_id = ?', [
+            tag_id,
+        ],
+    ).fetchall()
     db.commit()
     return render_template('memorize.html', cards=cards)
-    
+
 
 @app.route('/learned', methods=['POST'])
 def mark_known():
@@ -170,20 +177,21 @@ def mark_known():
     db_name = flask.cookies.get('username')
     card_id = int(request.form['card_id'])
     db = sqlite3.connect(os.path.join(db_path, db_name))
-    c = db.cursor()
     db.execute('UPDATE cards SET known = 1 WHERE id = ?', [card_id])
     db.commit()
-    flash('Card marked as known.')
-    return redirect(url_for('memorize', card_type=card_type))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    userdata = g.sqlite_db.execute('select username, password from users where username =?',(request.form['username'],)).fetchone()
+    userdata = g.sqlite_db.execute(
+        'select username, password from users where username =?', (
+            request.form['username'],
+        ),
+    ).fetchone()
     error = None
     if request.method == 'POST':
         if (
-                userdata is None 
+                userdata is None
                 or request.form['password'] != userdata[1]
         ):
             error = 'Invalid username or password!'
@@ -200,7 +208,6 @@ def logout():
     return redirect(url_for('index'))
 
 
-
 @app.route('/sets')
 def sets():
     db_path = flask.cookies.get('username')
@@ -208,8 +215,8 @@ def sets():
         f for f in os.listdir(
             db_path,
         ) if os.path.isfile(os.path.join(db_path, f) and f.endswith('.db'))
-    ] 
-    return rander_template('sets.html', dbs=dbs)
+    ]
+    return render_template('sets.html', dbs=dbs)
 
 
 @app.route('/sets/add', methods=['POST'])
@@ -235,8 +242,10 @@ def edit_set():
     old_db_name = request.form['old_name']
     new_db_name = request.form['new_name']
     try:
-        os.rename(os.path.join(db_path, old_db_name + '.db'),
-                  os.path.join(db_path, new_db_name + '.db'))
+        os.rename(
+            os.path.join(db_path, old_db_name + '.db'),
+            os.path.join(db_path, new_db_name + '.db'),
+        )
     except OSError:
         pass
 
@@ -248,7 +257,7 @@ def set_overview(name):
     db = sqlite3.connect(os.path.join(db_path, db_name))
     c = db.cursor()
     tags = c.execute('SELECT id, name FROM tags').fetchall()
-    return rander_template('set_overview.html', tags = tags)
+    return render_template('set_overview.html', tags=tags)
 
 
 @app.route('/tags/add', methods=['POST'])
@@ -257,8 +266,12 @@ def add_tag():
     db_name = flask.cookies.get('current_set')
     db = sqlite3.connect(os.path.join(db_path, db_name))
     c = db.cursor()
-    c.execute('INSERT INTO tags (tagName) VALUES (?)', [request.form['tagName']])
+    c.execute(
+        'INSERT INTO tags (tagName) VALUES (?)',
+        [request.form['tagName']],
+    )
     db.commit()
+
 
 @app.route('/tags/delete', methods=['DELETE'])
 def delete_tag():
@@ -276,7 +289,11 @@ def edit_tag():
     db_name = flask.cookies.get('current_set')
     db = sqlite3.connect(os.path.join(db_path, db_name))
     c = db.cursor()
-    c.execute('Update tags set name =? where id = ?', [request.form['tagName'], request.form['tag_id']])
+    c.execute(
+        'Update tags set name =? where id = ?', [
+            request.form['tagName'], request.form['tag_id'],
+        ],
+    )
     db.commit()
 
 
