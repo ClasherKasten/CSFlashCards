@@ -11,12 +11,17 @@ def main():
         c.executescript(f.read())
         db.commit()
     while True:
-        username = input('Enter username: ')
+        username = input('Enter username: ').replace('\n', '')
         if username == 'exit':
             break
         password = secrets.token_urlsafe(15)
+        print(password)
         c.execute(
             'INSERT INTO users (username, password) VALUES (?,?)',
             (username, password),
         )
         db.commit()
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

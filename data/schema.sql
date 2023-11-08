@@ -5,12 +5,12 @@ create table if not exists cards (
   front text not null,
   back text not null,
   known boolean default 0,
-  programming_language text
+  programming_language text,
+  tag_id integer not null,
+  foreign key(tag_id) references tags(id)
 );
 
 create table if not exists tags (
   id integer primary key autoincrement,
-  name text not null,
-  -- card_id integer,
-  -- foreign key (card_id) references cards(id)
+  name text not null
 );

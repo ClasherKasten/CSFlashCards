@@ -53,6 +53,8 @@ textarea {
 .well {
   display: flex;
   justify-content: center;
+  align-items: center;
+  height: 75vh;
 }
 
 .well > form {
@@ -130,6 +132,11 @@ nav.navbar > div.container-fluid {
   gap: 2rem;
 }
 
+.cs-logo {
+  width: 150px;
+  aspect-ratio: 3600:2026;
+}
+
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {
   .navbar-brand {
@@ -155,6 +162,10 @@ nav.navbar > div.container-fluid {
   .navbar-brand {
     flex-grow: 0.75;
   }
+
+  .cs-logo {
+    width: 200px;
+  }
 }
 
 /* X-Large devices (large desktops, 1200px and up) */
@@ -172,5 +183,9 @@ nav.navbar > div.container-fluid {
 @media (min-width: 1400px) {
   .navbar-brand {
     flex-grow: 0.85;
+  }
+
+  .cs-logo {
+    width: 250px;
   }
 }

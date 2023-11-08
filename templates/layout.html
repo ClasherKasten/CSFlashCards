@@ -14,28 +14,31 @@
 <body>
     <div class="container">
         <div class="row">
-            <nav class="navbar navbar-expand-md">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="{{ url_for('login') }}">CS Flash Cards</a>
-
-                    {% if session.logged_in %}
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+            <nav class="navbar">
+                <div class="container-fluid d-flex justify-content-between">
+                    <a class="navbar-brand d-flex align-items-center" href="{{ url_for('login') }}">
+                        <img src="{{ url_for('static', filename='assets/logo_csflash.svg') }}" alt="Logo" class="d-inline-block align-text-top cs-logo">
+                        CS Flash Cards
+                    </a>
+                        {% if logged_in %}
+                        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
-                        <div class="collapse navbar-collapse" id="navbarToggler">
-                            <ul class="navbar-nav">
-                                <div class="d-md-flex">
-                                    <li class="nav-item"><a class="nav-link" href="{{ url_for('cards') }}"><img src="{{ url_for('static', filename='flash_cards.png') }}" alt="Cards"/><span class="d-md-none">Cards</span></a></li>
-                                    <li class="nav-item"><a class="nav-link" href="{{ url_for('tags') }}"><img src="{{ url_for('static', filename='tags.png') }}" alt="Tags"/><span class="d-md-none">Tags</span></a></li>
-                                    <li class="nav-item"><a class="nav-link" href="{{ url_for('show') }}"><img src="{{ url_for('static', filename='overview.png') }}" alt="Show"/><span class="d-md-none">Show</span></a></li>
-                                    <li class="nav-item"><a class="nav-link" href="{{ url_for('create_db') }}"><img src="{{ url_for('static', filename='new_database.png') }}" alt="Create database"/><span class="d-md-none">New set</span></a></li>
-                                    <li class="nav-item"><a class="nav-link" href="{{ url_for('memorize', card_type='1') }}"><img src="{{ url_for('static', filename='memorize.png') }}" alt="Memorize"/><span class="d-md-none">Memorize</span></a></li>
-                                    <li class="nav-item"><a class="nav-link" href="{{ url_for('memorize_known', card_type='1') }}"><img src="{{ url_for('static', filename='memorize_again.png') }}" alt="Memorize known items"/><span class="d-md-none">Memorize known</span></a></li>
-                                </div>
-                                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}"><img src="{{ url_for('static', filename='logout.png') }}" alt="Log out"/><span class="d-md-none">Logout</span></a></li>
-                            </ul>
+                        <div class="offcanvas offcanvas-end" id="navbarToggler">
+                            <div class="offcanvas-head d-flex justify-content-between align-items-center p-4">
+                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">CSFlashCards</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+                                </button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <ul class="navbar-nav">
+                                    <!-- Settings Modal -->
+                                    <li class="nav-item"><a class="nav-link" href="{{ url_for('settings') }}"><i class = "bi bi-gear mx-2"></i><span>Settings</span></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}"><i class = "bi bi-box-arrow-in-right mx-2"></i><span >Logout</span></a></li>
+                                </ul>
+                            </div>
                         </div>
-                    {% endif %}
+                        {% endif %}
                 </div>
             </nav>
         </div>
