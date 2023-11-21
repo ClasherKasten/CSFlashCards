@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import secrets
 import sqlite3
+# import secrets
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
         username = input('Enter username: ').replace('\n', '')
         if username == 'exit':
             break
-        password = secrets.token_urlsafe(15)
+        password = 'tinf23ai2'
         print(password)
         c.execute(
             'INSERT INTO users (username, password) VALUES (?,?)',

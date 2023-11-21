@@ -1,3 +1,12 @@
+html {
+  min-height: 100vh;
+}
+
+body {
+  min-height: 100%;
+  padding-bottom: calc(0.75rem + 50px);
+}
+
 .toggleSelected {
     background-color: #62b06b;
     color: #ffffff;
@@ -17,9 +26,9 @@ textarea {
 }
 
 .alignMiddle {
-    height: 20em;
-    display: table-cell;
-    vertical-align: middle;
+  height: 20rem;
+  display: grid;
+  align-items: center;
 }
 
 .cardBack {
@@ -114,18 +123,11 @@ nav.navbar > div.container-fluid {
   font-weight: 500;
 }
 
-.card h4 {
-  color: black;
-}
 
 .card {
   padding: 2rem;
 }
 
-.card:hover {
-  background-color: transparent;
-  color: black;
-}
 
 .cards-list {
   display: grid;
@@ -133,8 +135,41 @@ nav.navbar > div.container-fluid {
 }
 
 .cs-logo {
-  width: 150px;
+  width: 100px;
   aspect-ratio: 3600:2026;
+}
+
+#learn-bar {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  height: max-content;
+  background-color: grey;
+  padding: 0.5rem;
+}
+
+.cards-btn {
+  width: 50px;
+  height: 50px;
+}
+
+#btn-back {
+  color: black;
+}
+
+#cs-pl-parent {
+  display: none;
+}
+
+.wut-bar {
+  justify-content: space-around;
+}
+
+@media (min-width: 576px) {
+  .wut-bar {
+    justify-content: center;
+    gap: 50px;
+  }
 }
 
 /* Medium devices (tablets, 768px and up) */
@@ -155,6 +190,10 @@ nav.navbar > div.container-fluid {
   .cards-list {
     grid-template-columns: 1fr 1fr;
   }
+
+  .wut-bar {
+    gap: 75px;
+  }
 }
 
 /* Large devices (desktops, 992px and up) */
@@ -164,7 +203,7 @@ nav.navbar > div.container-fluid {
   }
 
   .cs-logo {
-    width: 200px;
+    width: 150px;
   }
 }
 
@@ -177,15 +216,15 @@ nav.navbar > div.container-fluid {
   .cards-list {
     grid-template-columns: 1fr 1fr 1fr;
   }
+
+  .wut-bar {
+    gap: 100px;
+  }
 }
 
 /* XX-Large devices (larger desktops, 1400px and up) */
 @media (min-width: 1400px) {
   .navbar-brand {
     flex-grow: 0.85;
-  }
-
-  .cs-logo {
-    width: 250px;
   }
 }

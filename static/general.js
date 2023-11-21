@@ -58,5 +58,4 @@ $(document).ready(function(){
     }
 
     // to remove the short delay on click on touch devices
-    FastClick.attach(document.body);
 });

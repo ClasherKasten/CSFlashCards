@@ -1,60 +1,32 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<!--
-    <div class="well editPanel">
-        <h2>Add a Card</h2>
-        <form action="{{ url_for('add_card') }}" method="post" class="cardForm">
-            <div class="form-group">
-                {% for tag in tags %}
-                <label for={{tag.tagName}} class="toggleButton btn btn-default btn-lg">{{tag.tagName}} &nbsp;
-                    <input type="radio" name="type" value={{tag.id}} id={{tag.tagName}}>
-                </label>
-                {% endfor %}
-            </div>
-            <div class="form-group fieldFront">
-                <label for="front">Front of Card</label>
-                <input type="text" name="front" id="front" class="form-control">
-            </div>
-            <div class="form-group fieldBack">
-                <label for="back">Back of Card</label>
-                <textarea name="back"
-                          class="form-control"
-                          id="back"
-                          placeholder="back of card"
-                          rows="12"></textarea>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="saveButton btn btn-lg btn-primary">Save</button>
-            </div>
-        </form>
-    </div>
--->
     <div class="page-header">
-        <div class="d-flex justify-content-between flex-fill w-100 mt-2 m-md-3" id="cards-info-field">
+        <div class="d-flex justify-content-center justify-content-md-between flex-fill w-100 mt-3 m-md-3" id="cards-info-field">
             <span>{{ cards|length }} Card{{ '' if (cards|length == 1) else 's' }}</span>
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-              <i class="bi bi-plus"></i>
-            </button>
         </div>
     </div>
     <!-- Cards list -->
     <div class="container p-4 p-sm-auto cards-list">
         {% for card in cards %}
-            <a href="{{ url_for('edit_card') }}" class="btn btn-outline-secondary card">
+            <button
+                data-bs-toggle="modal" data-bs-target="#editCardMod"
+                class="btn btn-outline-primary card"
+            >
                 <h4 class="text-start">
                     {{ card.front }}
                 </h4>
                 <div class="text-start">
                     {% if card.type == 1 %}
-                        {{ card.back|replace("\n", "<br />")|safe }}
-                    {% else %}
                         <pre><code>{{ card.back|escape }}</code></pre>
+                    {% else %}
+                        {{ card.back|replace("\n", "<br />")|safe }}
                     {% endif %}
                 </div>
-            </a>
+            </button>
         {% endfor %}
+        </div>
+
     </div>
 
 
@@ -68,11 +40,16 @@
           </div>
           <form action="{{ url_for('add_card') }}" method="post" class="cardForm">
             <div class="modal-body">
-                <div class="form-group">
+                <div class="form-group mt-2">
+                    <label for="type">Type of Card</label>
                     <select class="form-select" id="type" name="type">
-                        <option selected>Card type...</option>
-                        <option value="tm">Text/Math</option>
-                        <option value="c">Code</option>
+                        <option value="0" selected>Text/Math</option>
+                        <option value="1">Code</option>
+                    </select>
+                </div>
+                <div class="form-group mt-2" id="cs-pl-parent">
+                    <label for="cs-pl">Programming language</label>
+                    <select class="form-select" id="cs-pl" name="programming_language">
                     </select>
                 </div>
                 <div class="form-group fieldFront mt-3">
@@ -93,11 +70,119 @@
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>
           </form>
-          </div>
-          <div class="modal-footer">
-          </div>
         </div>
       </div>
     </div>
 
+    <div class="modal fade" id="cs-editCard" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="editCardLabel">Edit card</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form action="{{ url_for('edit_card') }}" method="post" class="cardForm">
+            <div class="modal-body" id="editCardModalBody">
+                <div class="form-group mt-2">
+                    <label for="etype">Type of Card</label>
+                    <select class="form-select" id="etype" name="type">
+                        <option value="0" selected>Text/Math</option>
+                        <option value="1">Code</option>
+                    </select>
+                </div>
+                <div class="form-group" id="ecs-pl-parent">
+                    <label for="ecs-pl">Programming language</label>
+                    <select class="form-select" id="ecs-pl" name="programming_language">
+                    </select>
+                </div>
+                <div class="form-group fieldFront mt-3">
+                    <label for="efront">Front of Card (Question)</label>
+                    <input type="text" name="front" id="efront" class="form-control">
+                </div>
+                <div class="form-group fieldBack mt-3">
+                    <label for="eback">Back of Card (Answer)</label>
+                    <textarea name="back"
+                              class="form-control"
+                              id="eback"
+                              rows="12"
+                              style="resize: none"></textarea>
+                </div>
+            </div>
+            <div class="form-group modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+<!-- Modal2 -->
+<!---
+    TODO: how to get the card data without a lot of consequences?
+-->
+    <div class="modal fade" id="cs-startLearn" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">Start Learning</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="cs-learningstarts" action="{{ url_for('memorize') }}" method="get" class="cardForm">
+            <div class="modal-body">
+                <p>What do you wanna learn?</p>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" value="0" name="learntype" id="cs-lall">
+                    <label class="form-check-label" for="cs-lall">
+                        Learn all cards in this topic
+                    </label>
+                </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" value="1" name="learntype" id="cs-lknown">
+                    <label class="form-check-label" for="cs-known">
+                        Learn only known cards in this topic
+                    </label>
+                </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" value="2" name="learntype" id="cs-lunknown">
+                    <label class="form-check-label" for="cs-kunnown">
+                        Learn only unknown cards in this topic
+                    </label>
+                </div>
+            </div>
+            <div class="form-group modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}
+
+{% block learnbar %}
+    <div id="learn-bar" class="bg-primary">
+        <div class="d-flex w-100 wut-bar">
+            <div data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <img class="cards-btn" src="{{ url_for('static', filename='assets/light_newCard_vektor.svg') }}">
+            </div>
+            <div data-bs-toggle="modal" data-bs-target="#cs-startLearn">
+                <img class="cards-btn" src="{{ url_for('static', filename='assets/light_startQuiz_vektor.svg') }}">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block addjs %}
+<script src="{{ url_for('static', filename='pl_drop.js') }}"></script>
+<script>
+const startLearningBtn = document.querySelector('#cs-learningstarts');
+startLearningBtn.addEventListener('submit', (event) => {
+  const data = Object.fromEntries(new FormData(event.target));
+  console.log(data);
+  window.location.href = `/learn?ltype=${data.learntype}`;
+});
+</script>
 {% endblock %}
